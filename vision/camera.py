@@ -10,6 +10,7 @@ import base64
 import time
 from flood import flood
 
+
 camera = PiCamera()
 camera.resolution = (320, 240)
 camera.framerate = 24
@@ -30,7 +31,8 @@ def getFrame():
                 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
                         image = frame.array
                         ##yield as_bytes(image)
-                        yield image
+                        [originalImage,left_closest,right_closest] = flood(image)
+                        yield [originalImage,left_closest,right_closest]
                         rawCapture.seek(0)
                         rawCapture.truncate()
         except KeyboardInterrupt:
@@ -40,5 +42,3 @@ def getFrame():
                 camera.close()
 
 
-def getFrameFactory():
-        return getFrame

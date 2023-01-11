@@ -2,6 +2,7 @@ from Encoder import EncoderCounter
 import time
 from pid_controller import PIController
 from robot import Robot
+import asyncio
 
 class Counter():
   def __init__(self):
@@ -29,7 +30,7 @@ class Counter():
     self.ticks_per_second = None
       
 
-
+      
 class SelfCorrectingRobot():
   def __init__(self):
     self.robot = Robot()
@@ -41,16 +42,33 @@ class SelfCorrectingRobot():
     self.forward_speed = 60
     self.pid = PIController(proportional_constant=5, integral_constant=0.3)
 
-  def forward(self):
+  def forward(self,speed):
+    self.forward_speed = speed
+    self.reset()
     self.state = 'forward'
     self.robot.set_left(self.forward_speed)
     self.robot.set_right(self.forward_speed)
 
   def stop(self):
-    self.state=='stopped'
+    self.state='stopped'
     self.robot.stop()
     self.reset()
 
+  def backward(self,speed):
+    self.reset()
+    self.state = 'backward'
+    self.robot.backward()
+               
+  def pivot_left(self,speed):
+    self.reset()
+    self.state = 'pivot_left'
+    self.robot.pivot_left(speed)
+
+  def pivot_right(self,speed):
+    self.reset()
+    self.state = 'pivot_right'
+    self.robot.pivot_right(speed)
+         
   def count(self):
     self.left_counter.tick(self.left_encoder.pulse_count)
     self.right_counter.tick(self.left_encoder.pulse_count)
@@ -72,5 +90,12 @@ class SelfCorrectingRobot():
       self.robot.set_left(left_speed)
       self.robot.set_right(right_speed)
       self.count()
+
+  async def start(self):
+    while True:
+      self.update()
+      await asyncio.sleep(0.01)
+    
+
 
 

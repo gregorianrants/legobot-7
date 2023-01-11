@@ -6,9 +6,14 @@ import time
 import zmq
 
 context = zmq.Context()
-socket = context.socket(zmq.PUB)
-socket.bind("tcp://192.168.178.52:3000")
+tcp_socket = context.socket(zmq.PUB)
+ipc_socket = context.socket(zmq.PUB)
+tcp_socket.bind("tcp://192.168.178.52:3000")
+ipc_socket.bind("ipc://camera")
+
 time.sleep(1)
 
 for frame in getFrame():
-    socket.send_pyobj({'original': frame })
+    [originalImage,left_closest,right_closest] = frame
+    tcp_socket.send_pyobj({'original': originalImage })
+    ipc_socket.send_pyobj({'left': left_closest, 'right': right_closest})

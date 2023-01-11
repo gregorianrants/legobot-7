@@ -1,23 +1,27 @@
 from SelfCorrectingRobot import SelfCorrectingRobot
 
 import time
+import asyncio
 
 
 bot = SelfCorrectingRobot()
 
-try: 
- 
-  stop_at_time = time.time() + 5
+async def stopAfter3():
+  global bot
+  await asyncio.sleep(3)
+  bot.stop()
 
-  speed = 60
+async def main():
+  runRobot = asyncio.create_task(bot.start())
+  stopRobot = asyncio.create_task(stopAfter3())
+  bot.forward(50)
+  await runRobot
 
-  bot.forward()
-
-  while time.time() < stop_at_time:
-    time.sleep(0.01)
-    bot.update()
+try:
+  asyncio.run(main())
 except KeyboardInterrupt:
-  bot.stop()
-finally: 
-  bot.stop()
+  bot.robot.stop()
+finally:
+  bot.robot.stop()
+
 

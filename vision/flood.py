@@ -53,7 +53,7 @@ def flood(original_image,lower_margin=(8,2,2),upper_margin=(14,2,2)):
     left_closest = getBottomOfUpperEdge(left).astype(float)
     right_closest = getBottomOfUpperEdge(right).astype(float)
     
-
-    cv2.drawContours(original_image,[approx],-1, (0, 255, 0), 2)
-    original_image = cv2.addWeighted(original_image,0.9,colored_mask,0.5,0.3)
+    processedImage = original_image.copy()
+    cv2.drawContours(processedImage,[approx],-1, (0, 255, 0), 2)
+    processedImage = cv2.addWeighted(processedImage,0.9,colored_mask,0.5,0.3)
     return [original_image,left_closest,right_closest]
