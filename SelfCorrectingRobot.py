@@ -55,9 +55,10 @@ class SelfCorrectingRobot():
     self.reset()
 
   def backward(self,speed):
+    print('going back')
     self.reset()
     self.state = 'backward'
-    self.robot.backward()
+    self.robot.backward(speed)
                
   def pivot_left(self,speed):
     self.reset()

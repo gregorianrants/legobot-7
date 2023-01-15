@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from get_seed_indicies import get_seed_indicies
 
 def getBottomOfUpperEdge(pixels): 
     closest = np.argmax(pixels,axis=0)
@@ -21,10 +22,9 @@ def flood(original_image,lower_margin=(8,2,2),upper_margin=(14,2,2)):
     (height,width) = image.shape[:2]
     (seedY,seedX) =(height-5,width//2)
     sample = image[seedY - 20:seedY + 20, seedX - 20: seedX + 20].copy()
-   
-
+    #(seedY,seedX) = get_seed_indicies(image,seedY - 20,seedY + 20,seedX - 20,seedX + 20)
     sample = cv2.GaussianBlur(sample, (11, 11), 0)
-    image[seedY - 20:seedY + 20, seedX - 20: seedX + 20]=sample
+    
   
     mask = np.zeros((height+2,width+2),'uint8')
 
@@ -56,4 +56,4 @@ def flood(original_image,lower_margin=(8,2,2),upper_margin=(14,2,2)):
     processedImage = original_image.copy()
     cv2.drawContours(processedImage,[approx],-1, (0, 255, 0), 2)
     processedImage = cv2.addWeighted(processedImage,0.9,colored_mask,0.5,0.3)
-    return [original_image,left_closest,right_closest]
+    return [processedImage,left_closest,right_closest]
