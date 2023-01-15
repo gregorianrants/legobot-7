@@ -21,7 +21,7 @@ class Counter():
       self.previous_time = time.time()
       self.ticks_per_second = count - self.previous_count
       self.previous_count = count
-      print('ticks per second',self.ticks_per_second)
+      #print('ticks per second',self.ticks_per_second)
 
   def reset(self):
     self.count = 0

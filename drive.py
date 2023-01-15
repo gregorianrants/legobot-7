@@ -1,8 +1,17 @@
 from sshkeyboard import listen_keyboard_manual
-from SelfCorrectingRobot import SelfCorrectingRobot
 import asyncio
+from self_drive.client import distance_gen
+from SelfCorrectingRobot import SelfCorrectingRobot
 
-bot = SelfCorrectingRobot()
+
+# from SelfCorrectingRobot import SelfCorrectingRobot
+# bot = SelfCorrectingRobot()
+
+
+from SafeDrive import SafeDrive
+
+motors = SelfCorrectingRobot()
+bot = SafeDrive(motors,distance_gen)
 
 async def start_listening():
     #do i need to put a sleep in here, how often does it poll input may use up resources?
@@ -13,6 +22,7 @@ async def start_listening():
 async def main():
   listen = asyncio.create_task(start_listening())
   runRobot = asyncio.create_task(bot.start())
+  runMotors = asyncio.create_task(motors.start())
   
   await listen
 
@@ -23,11 +33,11 @@ async def press(key):
     if(key=='up'):
         bot.forward(50)
     elif(key=='down'):
-        bot.backward()
+        bot.backward(50)
     elif(key=='left'):
-        bot.pivot_left(60)
+        bot.pivot_left(40)
     elif(key=='right'):
-        bot.pivot_right(60)
+        bot.pivot_right(40)
     elif(key=='space'):
         bot.stop()
 
